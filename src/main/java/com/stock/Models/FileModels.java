@@ -2,6 +2,22 @@ package com.stock.Models;
 
 public class FileModels {
 	
+	public String getMainEquitySheet() {
+		return MainEquitySheet;
+	}
+
+	public void setMainEquitySheet(String mainEquitySheet) {
+		MainEquitySheet = mainEquitySheet;
+	}
+
+	public String getCurrentValidCompanyName() {
+		return CurrentValidCompanyName;
+	}
+
+	public void setCurrentValidCompanyName(String currentValidCompanyName) {
+		CurrentValidCompanyName = currentValidCompanyName;
+	}
+
 	public String getDataSheetname() {
 		return DataSheetname;
 	}
@@ -42,6 +58,12 @@ public class FileModels {
 	
 	// Sheet name in the Dump sheet
 	String DataSheetname = "Data Sheet";
+	
+	// Current Company Working on
+	String CurrentValidCompanyName = "";
+	
+	// Main Company name sheet
+	String MainEquitySheet = "SourceCompanyNames/EQUITY_LIST.xlsx";
 	
 
 }

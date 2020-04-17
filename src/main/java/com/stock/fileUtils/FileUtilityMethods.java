@@ -35,6 +35,7 @@ public class FileUtilityMethods {
 			inputStream = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not Found Exiting");
+			e.printStackTrace();
 			throw new Exception("File Not Found please check the name");
 		}
 
@@ -61,6 +62,7 @@ public class FileUtilityMethods {
 			inputStream = new FileInputStream(FilePath);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not Found Exiting");
+			e.printStackTrace();
 			throw new Exception("File Not Found please check the name");
 		}
 
@@ -89,6 +91,50 @@ public class FileUtilityMethods {
 			return null;
 		}
 	}
+	
+	/*
+	 * Get any row and column from any sheet from any workbook
+	 * 
+	 * @params File name
+	 */
+	public String GetCellDataFromSheet(int row, int col, String FilePath , String SheetName) throws Exception {
+
+		try {
+			// System.out.println("File Opened Sucessfully");
+			inputStream = new FileInputStream(FilePath);
+		} catch (FileNotFoundException e) {
+			System.out.println("File not Found Exiting");
+			e.printStackTrace();
+			throw new Exception("File Not Found please check the name");
+		}
+
+		// Getting the workbook
+		@SuppressWarnings("resource")
+		Workbook workbook = new XSSFWorkbook(inputStream);
+		FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+		// Getting hold of the sheet
+		Sheet sheet = workbook.getSheet(SheetName);
+
+		// System.out.println(sheet.getRow(row).getCell(col).getCellType());
+		// Returns the cell value
+		try {
+			if (sheet.getRow(row).getCell(col).getCellType() == 1) {
+				return sheet.getRow(row).getCell(col).getStringCellValue();
+			} else if (HSSFDateUtil.isCellDateFormatted(sheet.getRow(row).getCell(col))) {
+				return String.valueOf(sheet.getRow(row).getCell(col).getDateCellValue());
+			} else if (sheet.getRow(row).getCell(col).getCellType() == 0) {
+				return String.valueOf(sheet.getRow(row).getCell(col).getNumericCellValue());
+			} else if (sheet.getRow(row).getCell(col).getCellType() == 2) {
+				return String.valueOf(evaluator.evaluateInCell(sheet.getRow(row).getCell(col)));
+			} else {
+				return "A new Cell type which you havent handled";
+			}
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+	
+	
 
 	/*
 	 * @Returns the number of data present in the source sheet
@@ -149,7 +195,7 @@ public class FileUtilityMethods {
 	 * 
 	 * @params File path of the Dump file
 	 */
-	public void GetDumpData(String DumpFile, String CompanyName) throws Exception {
+	public void GetDumpData(String DumpFile, String CompanyName ,String EactCompanyName) throws Exception {
 		System.out.println("The Dump Filepath = " + DumpFile);
 
 //		Boolean CompanyNameFalg = false, VersionFlag = false, MetaData = false, ProfitandLossFlag = false,
@@ -161,7 +207,8 @@ public class FileUtilityMethods {
 		System.out.println("PARSED DATA FROM EXCEL DUMPS");
 		System.out.println("-----------------------------");
 
-		System.out.println("Company Name : " + GetCellData(0, 1, DumpFile));
+		System.out.println("Company Name from passed sheet : " + GetCellData(0, 1, DumpFile));
+		System.out.println("Company Name from EQUITY Sheet : " + EactCompanyName);
 		// Asserting is the company names match
 		if (GetCellData(0, 1, DumpFile).toLowerCase().startsWith(CompanyName.toLowerCase())) {
 			// System.out.println("Can Proceed parsing");

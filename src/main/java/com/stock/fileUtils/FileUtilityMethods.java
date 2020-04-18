@@ -3,6 +3,8 @@ package com.stock.fileUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -62,7 +64,6 @@ public class FileUtilityMethods {
 			inputStream = new FileInputStream(FilePath);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not Found Exiting");
-			e.printStackTrace();
 			throw new Exception("File Not Found please check the name");
 		}
 
@@ -104,7 +105,6 @@ public class FileUtilityMethods {
 			inputStream = new FileInputStream(FilePath);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not Found Exiting");
-			e.printStackTrace();
 			throw new Exception("File Not Found please check the name");
 		}
 
@@ -189,13 +189,23 @@ public class FileUtilityMethods {
 
 		return colCount;
 	}
-
+	
+	/*
+	 * Returns the current System time
+	 */
+	public String GetDate() {
+		 
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();   
+		return dtf.format(now); 
+	}
+	
 	/*
 	 * Prints the data from the dump data from the sheet
 	 * 
 	 * @params File path of the Dump file
 	 */
-	public void GetDumpData(String DumpFile, String CompanyName ,String EactCompanyName) throws Exception {
+	public void GetDumpData(String DumpFile, String CompanyName ,String ExactCompanyName) throws Exception {
 		System.out.println("The Dump Filepath = " + DumpFile);
 
 //		Boolean CompanyNameFalg = false, VersionFlag = false, MetaData = false, ProfitandLossFlag = false,
@@ -208,7 +218,7 @@ public class FileUtilityMethods {
 		System.out.println("-----------------------------");
 
 		System.out.println("Company Name from passed sheet : " + GetCellData(0, 1, DumpFile));
-		System.out.println("Company Name from EQUITY Sheet : " + EactCompanyName);
+		System.out.println("Company Name from EQUITY Sheet : " + ExactCompanyName);
 		// Asserting is the company names match
 		if (GetCellData(0, 1, DumpFile).toLowerCase().startsWith(CompanyName.toLowerCase())) {
 			// System.out.println("Can Proceed parsing");
